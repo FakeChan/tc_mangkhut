@@ -147,4 +147,4 @@ def plot_wrf_domains(namelist_path,output_path):
 # --- 脚本执行入口 ---
 if __name__ == "__main__":
     output_path='/share/home/lililei1/kcfu/tc_mangkhut/plot_scripts/figs/domain_plot.png'
-    plot_wrf_domains('/share/home/lililei1/kcfu/models/real_WRF_WPS/V4.1/WPS-4.1/namelist.wps',output_path)
+    plot_wrf_domains('/share/home/lililei1/kcfu/models/real_WRF_WPS/V4.1/WPS-4.1/namelist.wps.mangkhut',output_path)

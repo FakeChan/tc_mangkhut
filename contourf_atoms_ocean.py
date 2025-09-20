@@ -178,7 +178,7 @@ if __name__ == "__main__":
     for task in TASKS:
         level_str = str(abs(task['level_value']))
         output_dir = os.path.join(FIGS_BASE_DIR, task['domain_name'].lower())
-        output_filename = f"{task['variable']}_{task['level_type'].split('_')[-1]}{level_str}_r{RADIUS_GRID_POINTS}.png"
+        output_filename = f"{task['variable']}_{task['level_type'].split('_')[-1]}{level_str}_{atm_pres}_r{RADIUS_GRID_POINTS}.png"
         output_path = os.path.join(output_dir, output_filename)
 
         plot_comparison(

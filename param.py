@@ -41,9 +41,9 @@ kc_red="#D0002E"            #"#D55E00"
 kc_green="#009E73"
 
 truth_mask_dic={
-    'd02->d01':slice(5,896,5)
+    'd02->d01':slice(5,1496,5)
 }
 anal_mask_dic={
-    'd01_j':slice(128,307),
-    'd01_i':slice(118,297)
+    'd01_i':slice(27,326),
+    'd01_j':slice(88,387)
 }
