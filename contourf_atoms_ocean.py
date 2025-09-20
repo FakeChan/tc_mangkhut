@@ -31,7 +31,10 @@ def extract_data(file_path, variable, level_type, level_value, center_j, center_
             else: raise ValueError(f"不支持的大气变量: {variable}")
             
             field_level = field_3d[level_value, :, :]
-            return field_level[j_start:j_end, i_start:i_end]
+            # temporarily commit to compute domain averaged RMSE
+            # return field_level[j_start:j_end, i_start:i_end]
+              
+            return field_level
 
     elif level_type == 'ocean_index':
         # --- 海洋场提取逻辑 (遵照您的代码) ---
@@ -42,7 +45,8 @@ def extract_data(file_path, variable, level_type, level_value, center_j, center_
             da = ds[variable]
             # 假设维度顺序是 [time, level, j, i]
             # 使用 level_value (即 ocean_level) 作为索引直接切片
-            data_subset = da[0, level_value, j_start:j_end, i_start:i_end]
+            # data_subset = da[0, level_value, j_start:j_end, i_start:i_end]
+            data_subset = da[0, level_value, :, :]
             return data_subset.values
     else:
         raise ValueError(f"未知的 level_type: '{level_type}'。请选择 'atm_index' 或 'ocean_index'。")
@@ -63,7 +67,15 @@ def plot_comparison(files, analysis_names, variable, level_type, level_value, ra
 
     print(f"正在提取 {variable} 在 {level_type.split('_')[-1]} = {level_value} 的数据...")
     data = {key: extract_data(path, variable, level_type, level_value, jTC, iTC, radius) for key, path in files.items()}
-
+    for key,value in data.items():
+        if key=='nr':
+            mask = truth_mask_dic['d02->d01']
+            #all values should be 2d
+            data[key] = value[mask,mask]
+        else:
+            mask_j=anal_mask_dic['d01_j']
+            mask_i=anal_mask_dic['d01_i']
+            data[key]=value[mask_j,mask_i]
     increment1 = data['an1'] - data['fg']
     increment2 = data['an2'] - data['fg']
     
@@ -137,10 +149,10 @@ def get_tc_location(nc_file):
 if __name__ == "__main__":
     # --- a. 文件路径设置 (统一) ---
     FILES = {
-        'nr':  '/scratch/lililei1/kcfu/tc_mangkhut/NR/d01/wrfout_d01_2018-09-10_06:00:00',
-        'fg':  '/scratch/lililei1/kcfu/tc_mangkhut/2ens_free_fcst/firstguess.ensmean.100600',
-        'an1': '/share/home/lililei1/kcfu/tc_mangkhut/5cyclingDA/postAnal_EAKF/d01_10_06_00/analysis.ensmean',
-        'an2': '/share/home/lililei1/kcfu/tc_mangkhut/5cyclingDA/postAnal_QCF_RHF/d01_10_06_00/analysis.ensmean'
+        'nr':  '/share/home/lililei1/kcfu/tc_mangkhut/NR_wrfout/wrfout_d02_2018-09-10_06:00:00',
+        'fg':  '/share/home/lililei1/kcfu/tc_mangkhut/6forecast_only_stable/output/10_00_00/firstguess.ensmean.100600',
+        'an1': '/share/home/lililei1/kcfu/tc_mangkhut/4assimilation/0mem_all_time/cyclingDA/10_06_00/EAKF/firstguess.ensmean',
+        'an2': '/share/home/lililei1/kcfu/tc_mangkhut/4assimilation/0mem_all_time/cyclingDA/10_06_00/QCF_RHF/firstguess.ensmean'
     }
     ANALYSIS_NAMES = {'an1': 'EAKF', 'an2': 'QCF_RHF'}
     atm_pres='1000hpa'
