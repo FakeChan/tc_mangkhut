@@ -47,3 +47,11 @@ anal_mask_dic={
     'd01_i':slice(27,326),
     'd01_j':slice(88,387)
 }
+
+def mask_j_i_to_d01(j,i,domain):
+    if domain=='d02':
+        d01_i=round(i/5+26)
+        d01_j=round(j/5+87)
+    
+    return d01_j,d01_i
+    
